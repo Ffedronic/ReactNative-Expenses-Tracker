@@ -50,10 +50,9 @@ function ExpenseContextProvider({ children }) {
   const [expenses, setExpenses] = useState([...DUMMY_EXPENSES]);
 
   function addExpenses(expense) {
-    console.log(expense);
     setExpenses((currentExpenses) => [
       ...currentExpenses,
-      { ...expense, id: `${Math.random() * (1000 - 1) + 1}` },
+      { ...expense, id: `${Math.random() * (100000000000 - 1) + 1}` }
     ]);
   }
 

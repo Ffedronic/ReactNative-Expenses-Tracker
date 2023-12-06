@@ -4,6 +4,7 @@ import IconButton from "../components/UI/IconButton";
 import { GlobalStyles } from "../constants/styles";
 import CustsomButton from "../components/UI/CustsomButton";
 import { ExpensesContext } from "../store/expense-context";
+import ExpenseForm from "../components/ManageExpenses/ExpenseForm";
 
 function ManageExpenses({ route, navigation }) {
   const expenseCtx = useContext(ExpensesContext);
@@ -28,16 +29,26 @@ function ManageExpenses({ route, navigation }) {
   }
 
   function confirmHandler() {
-    expenseCtx.addExpenses({
-      description: "test",
-      amount: 11.99,
-      date: new Date("2023-12-06"),
-    });
+    if (editingMode) {
+      expenseCtx.updateExpenses(editedExpenseId, {
+        description: "test",
+        amount: 11.99,
+        date: new Date("2023-12-06"),
+      });
+    } else {
+      expenseCtx.addExpenses({
+        description: "test",
+        amount: 11.99,
+        date: new Date("2023-12-06"),
+      });
+    }
+
     navigation.goBack();
   }
 
   return (
     <View style={styles.container}>
+      <ExpenseForm />
       <View style={styles.buttonsContainer}>
         <CustsomButton
           mode="flat"
