@@ -1,11 +1,15 @@
-import { useLayoutEffect } from "react";
+import { useContext, useLayoutEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import IconButton from "../components/UI/IconButton";
 import { GlobalStyles } from "../constants/styles";
 import CustsomButton from "../components/UI/CustsomButton";
+import { ExpensesContext } from "../store/expense-context";
 
 function ManageExpenses({ route, navigation }) {
+  const expenseCtx = useContext(ExpensesContext);
+
   const editedExpenseId = route.params?.expenseId;
+
   const editingMode = !!editedExpenseId;
 
   useLayoutEffect(() => {
@@ -15,20 +19,31 @@ function ManageExpenses({ route, navigation }) {
   }, [navigation, editingMode]);
 
   function deleteExpenseHandler() {
-    navigation.goBack()
+    expenseCtx.deleteExpenses(editedExpenseId);
+    navigation.goBack();
   }
 
   function cancelHandler() {
-    navigation.goBack()
+    navigation.goBack();
   }
 
   function confirmHandler() {
-    navigation.goBack()
+    expenseCtx.addExpenses({
+      description: "test",
+      amount: 11.99,
+      date: new Date("2023-12-06"),
+    });
+    navigation.goBack();
   }
+
   return (
     <View style={styles.container}>
       <View style={styles.buttonsContainer}>
-        <CustsomButton mode="flat" onPress={cancelHandler} style={styles.button}>
+        <CustsomButton
+          mode="flat"
+          onPress={cancelHandler}
+          style={styles.button}
+        >
           Cancel
         </CustsomButton>
         <CustsomButton onPress={confirmHandler} style={styles.button}>
@@ -69,7 +84,7 @@ const styles = StyleSheet.create({
   },
   button: {
     minWidth: 120,
-     marginHorizontal: 8
-  }
+    marginHorizontal: 8,
+  },
 });
 export default ManageExpenses;
