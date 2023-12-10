@@ -34,15 +34,15 @@ function ManageExpenses({ route, navigation }) {
   function confirmHandler({ description, amount, date }) {
     if (editingMode) {
       expenseCtx.updateExpenses(editedExpenseId, {
-        description: description,
-        amount: +amount,
-        date: new Date(date),
+        description: description.value,
+        amount: +amount.value,
+        date: new Date(date.value),
       });
     } else {
       expenseCtx.addExpenses({
-        description: description,
-        amount: +amount,
-        date: new Date(date),
+        description: description.value,
+        amount: +amount.value,
+        date: new Date(date.value),
       });
     }
 
