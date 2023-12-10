@@ -1,8 +1,7 @@
-import React, { useContext, useRef, useState } from "react";
-import { StyleSheet, Text, TextInput, View, Alert } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import Input from "./Input";
 import CustsomButton from "../UI/CustsomButton";
-import { ExpensesContext } from "../../store/expense-context";
 import { GlobalStyles } from "../../constants/styles";
 
 function ExpenseForm({ onCancel, editingMode, onConfirm, selectedExpense }) {
