@@ -10,6 +10,9 @@ function ManageExpenses({ route, navigation }) {
   const expenseCtx = useContext(ExpensesContext);
 
   const editedExpenseId = route.params?.expenseId;
+  const selectedExpense = expenseCtx.expenses.find(
+    (expense) => expense.id === editedExpenseId
+  );
 
   const editingMode = !!editedExpenseId;
 
@@ -28,18 +31,18 @@ function ManageExpenses({ route, navigation }) {
     navigation.goBack();
   }
 
-  function confirmHandler() {
+  function confirmHandler({ description, amount, date }) {
     if (editingMode) {
       expenseCtx.updateExpenses(editedExpenseId, {
-        description: "test",
-        amount: 11.99,
-        date: new Date("2023-12-06"),
+        description: description,
+        amount: +amount,
+        date: new Date(date),
       });
     } else {
       expenseCtx.addExpenses({
-        description: "test",
-        amount: 11.99,
-        date: new Date("2023-12-06"),
+        description: description,
+        amount: +amount,
+        date: new Date(date),
       });
     }
 
@@ -48,19 +51,12 @@ function ManageExpenses({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <ExpenseForm />
-      <View style={styles.buttonsContainer}>
-        <CustsomButton
-          mode="flat"
-          onPress={cancelHandler}
-          style={styles.button}
-        >
-          Cancel
-        </CustsomButton>
-        <CustsomButton onPress={confirmHandler} style={styles.button}>
-          {editingMode ? "Update" : "Add"}
-        </CustsomButton>
-      </View>
+      <ExpenseForm
+        onCancel={cancelHandler}
+        editingMode={editingMode}
+        onConfirm={confirmHandler}
+        selectedExpense={selectedExpense}
+      />
       {editingMode && (
         <View style={styles.deleteContainer}>
           <IconButton
@@ -87,15 +83,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 2,
     borderTopColor: GlobalStyles.colors.primary200,
     alignItems: "center",
-  },
-  buttonsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  button: {
-    minWidth: 120,
-    marginHorizontal: 8,
   },
 });
 export default ManageExpenses;
