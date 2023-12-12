@@ -21,7 +21,7 @@ const navigation = useNavigation()
             {itemData.item.description}
           </Text>
           <Text style={styles.textBase}>
-            {itemData.item.date.toLocaleDateString()}
+            {itemData.item.date.toISOString().slice(0, 10)}
           </Text>
         </View>
         <View style={styles.amountContainer}>

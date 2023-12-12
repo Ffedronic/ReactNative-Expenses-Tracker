@@ -11,10 +11,10 @@ export const ExpensesContext = createContext({
 function ExpenseContextProvider({ children }) {
   const [expenses, setExpenses] = useState([]);
 
-  function addExpenses(expense) {
+  function addExpenses(id, expense) {
     setExpenses((currentExpenses) => [
       ...currentExpenses,
-      { ...expense, id: `${Math.random() * (100000000000 - 1) + 1}` },
+      { ...expense, id: id },
     ]);
   }
 

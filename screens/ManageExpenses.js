@@ -32,7 +32,7 @@ function ManageExpenses({ route, navigation }) {
     navigation.goBack();
   }
 
-  function confirmHandler({ description, amount, date }) {
+  async function confirmHandler({ description, amount, date }) {
     const expenseData = {
       description: description.value,
       amount: +amount.value,
@@ -42,8 +42,8 @@ function ManageExpenses({ route, navigation }) {
     if (editingMode) {
       expenseCtx.updateExpenses(editedExpenseId, expenseData);
     } else {
-      storeExpense(expenseData);
-      expenseCtx.addExpenses(expenseData);
+      const id = await storeExpense(expenseData);
+      expenseCtx.addExpenses(id, expenseData);
     }
 
     navigation.goBack();
