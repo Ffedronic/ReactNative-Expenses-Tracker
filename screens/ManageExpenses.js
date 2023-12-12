@@ -4,11 +4,13 @@ import IconButton from "../components/UI/IconButton";
 import { GlobalStyles } from "../constants/styles";
 import { ExpensesContext } from "../store/expense-context";
 import ExpenseForm from "../components/ManageExpenses/ExpenseForm";
+import { storeExpense } from "../utils/http";
 
 function ManageExpenses({ route, navigation }) {
   const expenseCtx = useContext(ExpensesContext);
 
   const editedExpenseId = route.params?.expenseId;
+  
   const selectedExpense = expenseCtx.expenses.find(
     (expense) => expense.id === editedExpenseId
   );
@@ -31,18 +33,17 @@ function ManageExpenses({ route, navigation }) {
   }
 
   function confirmHandler({ description, amount, date }) {
+    const expenseData = {
+      description: description.value,
+      amount: +amount.value,
+      date: new Date(date.value),
+    };
+
     if (editingMode) {
-      expenseCtx.updateExpenses(editedExpenseId, {
-        description: description.value,
-        amount: +amount.value,
-        date: new Date(date.value),
-      });
+      expenseCtx.updateExpenses(editedExpenseId, expenseData);
     } else {
-      expenseCtx.addExpenses({
-        description: description.value,
-        amount: +amount.value,
-        date: new Date(date.value),
-      });
+      storeExpense(expenseData);
+      expenseCtx.addExpenses(expenseData);
     }
 
     navigation.goBack();
