@@ -1,16 +1,19 @@
-import { useContext, useLayoutEffect } from "react";
+import { useContext, useLayoutEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import IconButton from "../components/UI/IconButton";
 import { GlobalStyles } from "../constants/styles";
 import { ExpensesContext } from "../store/expense-context";
 import ExpenseForm from "../components/ManageExpenses/ExpenseForm";
 import { storeExpense } from "../utils/http";
+import OverLay from "../components/UI/OverLay";
 
 function ManageExpenses({ route, navigation }) {
   const expenseCtx = useContext(ExpensesContext);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const editedExpenseId = route.params?.expenseId;
-  
+
   const selectedExpense = expenseCtx.expenses.find(
     (expense) => expense.id === editedExpenseId
   );
@@ -38,15 +41,22 @@ function ManageExpenses({ route, navigation }) {
       amount: +amount.value,
       date: new Date(date.value),
     };
+    setIsSubmitting(true);
 
     if (editingMode) {
       expenseCtx.updateExpenses(editedExpenseId, expenseData);
+      setIsSubmitting(false);
     } else {
       const id = await storeExpense(expenseData);
       expenseCtx.addExpenses(id, expenseData);
+      setIsSubmitting(false);
     }
 
     navigation.goBack();
+  }
+
+  if (isSubmitting) {
+    return <OverLay />;
   }
 
   return (
