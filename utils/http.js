@@ -22,3 +22,11 @@ export async function fetchExpenses() {
   }
   return expenses;
 }
+
+export async function updateDBExpense(id, expense){
+  axios.put(BACKEND_URL)
+}
+
+export async function deleteDBExpense(){
+
+}
