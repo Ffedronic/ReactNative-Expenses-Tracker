@@ -4,7 +4,7 @@ import IconButton from "../components/UI/IconButton";
 import { GlobalStyles } from "../constants/styles";
 import { ExpensesContext } from "../store/expense-context";
 import ExpenseForm from "../components/ManageExpenses/ExpenseForm";
-import { storeExpense } from "../utils/http";
+import { deleteDBExpense, storeExpense, updateDBExpense } from "../utils/http";
 import OverLay from "../components/UI/OverLay";
 
 function ManageExpenses({ route, navigation }) {
@@ -26,7 +26,8 @@ function ManageExpenses({ route, navigation }) {
     });
   }, [navigation, editingMode]);
 
-  function deleteExpenseHandler() {
+  async function deleteExpenseHandler() {
+    await deleteDBExpense(editedExpenseId);
     expenseCtx.deleteExpenses(editedExpenseId);
     navigation.goBack();
   }
@@ -44,6 +45,7 @@ function ManageExpenses({ route, navigation }) {
     setIsSubmitting(true);
 
     if (editingMode) {
+      await updateDBExpense(editedExpenseId, expenseData);
       expenseCtx.updateExpenses(editedExpenseId, expenseData);
       setIsSubmitting(false);
     } else {
