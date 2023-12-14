@@ -6,11 +6,13 @@ import { ExpensesContext } from "../store/expense-context";
 import ExpenseForm from "../components/ManageExpenses/ExpenseForm";
 import { deleteDBExpense, storeExpense, updateDBExpense } from "../utils/http";
 import OverLay from "../components/UI/OverLay";
+import ErrorOverlay from "../components/UI/ErrorOverlay";
 
 function ManageExpenses({ route, navigation }) {
   const expenseCtx = useContext(ExpensesContext);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
 
   const editedExpenseId = route.params?.expenseId;
 
@@ -27,9 +29,15 @@ function ManageExpenses({ route, navigation }) {
   }, [navigation, editingMode]);
 
   async function deleteExpenseHandler() {
-    await deleteDBExpense(editedExpenseId);
-    expenseCtx.deleteExpenses(editedExpenseId);
-    navigation.goBack();
+    setIsSubmitting(true);
+    try {
+      await deleteDBExpense(editedExpenseId);
+      expenseCtx.deleteExpenses(editedExpenseId);
+      setIsSubmitting(false);
+      navigation.goBack();
+    } catch (error) {
+      setError("Could not delete the expenses!");
+    }
   }
 
   function cancelHandler() {
@@ -42,19 +50,37 @@ function ManageExpenses({ route, navigation }) {
       amount: +amount.value,
       date: new Date(date.value),
     };
+
     setIsSubmitting(true);
 
     if (editingMode) {
-      await updateDBExpense(editedExpenseId, expenseData);
-      expenseCtx.updateExpenses(editedExpenseId, expenseData);
-      setIsSubmitting(false);
+      try {
+        await updateDBExpense(editedExpenseId, expenseData);
+        expenseCtx.updateExpenses(editedExpenseId, expenseData);
+        setIsSubmitting(false);
+        navigation.goBack();
+      } catch (error) {
+        setError("Could not update the expense!");
+      }
     } else {
-      const id = await storeExpense(expenseData);
-      expenseCtx.addExpenses(id, expenseData);
-      setIsSubmitting(false);
+      try {
+        const id = await storeExpense(expenseData);
+        expenseCtx.addExpenses(id, expenseData);
+        setIsSubmitting(false);
+        navigation.goBack();
+      } catch (error) {
+        setError("Could not store the expense!");
+      }
     }
+  }
 
-    navigation.goBack();
+  function errorHandler() {
+    setError(null);
+    setIsSubmitting(false);
+  }
+
+  if (error && isSubmitting) {
+    return <ErrorOverlay message={error} onError={errorHandler} />;
   }
 
   if (isSubmitting) {

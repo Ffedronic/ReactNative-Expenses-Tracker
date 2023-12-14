@@ -27,7 +27,7 @@ export async function fetchExpenses() {
 }
 
 export async function updateDBExpense(id, expenseData) {
-  return axios.put(BACKEND_URL + `/expenses/${id}.json`, expenseData);
+ return axios.put(BACKEND_URL + `/expenses/${id}.json`, expenseData);
 }
 
 export async function deleteDBExpense(id) {
